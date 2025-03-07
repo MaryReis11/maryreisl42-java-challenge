@@ -113,10 +113,14 @@ public class ProdutoService {
 	
 
 	public Produto desassociarCategoria(Long produtoId) {
+	    // Buscando o produto no repositório
 	    Produto produto = produtoRepository.findById(produtoId);
-
 	    if (produto == null) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+	        // Usando TabelaDeErros.PRODUTO_NAO_ENCONTRADO
+	        throw new ResponseStatusException(
+	            TabelaDeErros.PRODUTO_NAO_ENCONTRADO.getCodigoHttp(), 
+	            TabelaDeErros.PRODUTO_NAO_ENCONTRADO.getMensagem()
+	        );
 	    }
 
 	    // Verificando se o produto está no carrinho
@@ -124,14 +128,23 @@ public class ProdutoService {
 	        .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
 
 	    if (estaEmCarrinho) {
-	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não pode ser removida, produto está no carrinho");
+	        // Usando TabelaDeErros.PRODUTO_NO_CARRINHO_NAO_REMOVIVEL
+	        throw new ResponseStatusException(
+	            TabelaDeErros.PRODUTO_NO_CARRINHO_NAO_REMOVIVEL.getCodigoHttp(), 
+	            TabelaDeErros.PRODUTO_NO_CARRINHO_NAO_REMOVIVEL.getMensagem()
+	        );
 	    }
 
 	    if (produto.getCategoria() == null) {
-	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto já está sem categoria");
+	        // Usando TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO 
+	        throw new ResponseStatusException(
+	            TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO.getCodigoHttp(), 
+	            "Produto já está sem categoria" // A mensagem customizada para esse erro
+	        );
 	    }
 
-	    produto.setCategoria(null); // Remove a categoria associada
+	    // Remove a categoria associada ao produto
+	    produto.setCategoria(null);
 	    return produtoRepository.save(produto);
 	}
 
