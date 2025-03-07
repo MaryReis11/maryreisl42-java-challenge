@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.com.Loja.Repository.CarrinhoRepository;
 import br.com.Loja.Repository.CategoriaRepository;
 import br.com.Loja.Repository.ProdutoRepository;
+import br.com.Loja.exception.TabelaDeErros;
 import br.com.Loja.model.Carrinho;
 import br.com.Loja.model.Categoria;
 import br.com.Loja.model.Produto;
@@ -45,23 +46,30 @@ public class ProdutoService {
 	}
 
 	public void deletarProduto(Long produtoId) {
-        Produto produto = produtoRepository.findById(produtoId);
+	    Produto produto = produtoRepository.findById(produtoId);
 
-        if (produto == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado.");
-        }
+	    if (produto == null) {
+	        // Usando TabelaDeErros.PRODUTO_NAO_ENCONTRADO
+	        throw new ResponseStatusException(
+	            TabelaDeErros.PRODUTO_NAO_ENCONTRADO.getCodigoHttp(), 
+	            TabelaDeErros.PRODUTO_NAO_ENCONTRADO.getMensagem()
+	        );
+	    }
 
-        // Verifica se o produto está em algum carrinho
-        boolean estaEmCarrinho = carrinhoRepository.findAll().stream()
-            .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
+	    // Verifica se o produto está em algum carrinho
+	    boolean estaEmCarrinho = carrinhoRepository.findAll().stream()
+	        .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
 
-        if (estaEmCarrinho) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-                "O produto está em um carrinho e não pode ser removido.");
-        }
+	    if (estaEmCarrinho) {
+	        // Usando TabelaDeErros.PRODUTO_NO_CARRINHO_NAO_REMOVIVEL
+	        throw new ResponseStatusException(
+	            TabelaDeErros.PRODUTO_NO_CARRINHO_NAO_REMOVIVEL.getCodigoHttp(), 
+	            TabelaDeErros.PRODUTO_NO_CARRINHO_NAO_REMOVIVEL.getMensagem()
+	        );
+	    }
 
-        produtoRepository.delete(produto);
-    }
+	    produtoRepository.delete(produto);
+	}
 
 	public Produto associarCategoria(Long produtoId, Long categoriaId) {
 	    // Buscando o produto no repositório
