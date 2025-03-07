@@ -84,4 +84,14 @@ public class CarrinhoService {
 	    
 	    return "Produto removido do carrinho";
 	}
+	public Set<Produto> listarProdutosNoCarrinho(Long carrinhoId) {
+	    Optional<Carrinho> carrinhoOpt = carrinhoRepository.findById(carrinhoId);
+
+	    if (!carrinhoOpt.isPresent()) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Carrinho não encontrado");
+	    }
+
+	    Carrinho carrinho = carrinhoOpt.get();
+	    return carrinho.getProdutos();  // Retorna o conjunto de produtos
+	}
 }

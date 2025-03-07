@@ -63,7 +63,6 @@ public class ProdutoService {
         produtoRepository.delete(produto);
     }
 
-	// Associar um produto a uma categoria
 	public Produto associarCategoria(Long produtoId, Long categoriaId) {
 	    // Buscando o produto no repositório
 	    Produto produto = produtoRepository.findById(produtoId);
@@ -71,9 +70,16 @@ public class ProdutoService {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
 	    }
 
+	    // Verificando se o produto está no carrinho
+	    boolean estaEmCarrinho = carrinhoRepository.findAll().stream()
+	        .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
+
+	    if (estaEmCarrinho) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não pode ser alterada, produto está no carrinho");
+	    }
+
 	    // Buscando a categoria com Optional
 	    Optional<Categoria> categoriaOptional = categoriaRepository.findById(categoriaId);
-	    
 	    if (!categoriaOptional.isPresent()) {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
 	    }
@@ -86,19 +92,27 @@ public class ProdutoService {
 	}
 
 	public Produto desassociarCategoria(Long produtoId) {
-        Produto produto = produtoRepository.findById(produtoId);
+	    Produto produto = produtoRepository.findById(produtoId);
 
-        if (produto == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
-        }
+	    if (produto == null) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+	    }
 
-        if (produto.getCategoria() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto já está sem categoria");
-        }
+	    // Verificando se o produto está no carrinho
+	    boolean estaEmCarrinho = carrinhoRepository.findAll().stream()
+	        .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
 
-        produto.setCategoria(null); // Remove a categoria associada
-        return produtoRepository.save(produto);
-    }
+	    if (estaEmCarrinho) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não pode ser removida, produto está no carrinho");
+	    }
+
+	    if (produto.getCategoria() == null) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto já está sem categoria");
+	    }
+
+	    produto.setCategoria(null); // Remove a categoria associada
+	    return produtoRepository.save(produto);
+	}
 
 	// Listar todos os produtos
 	public List<Produto> listarProdutos() {
