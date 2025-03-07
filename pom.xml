@@ -60,15 +60,41 @@
 		
 		<!-- Dependência para Testes -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-core</artifactId>
+		    <version>4.0.0</version>
+		    <scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>carros</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-api</artifactId>
+		    <version>5.7.0</version>
+		    <scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-engine</artifactId>
+		    <version>5.7.0</version>
+		    <scope>test</scope>
+		</dependency>
+		<!-- Dependência para testes no Spring Boot -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-test</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	    <!-- Dependência para Mockito (caso queira usar mock em objetos) -->
+	    <dependency>
+	        <groupId>org.mockito</groupId>
+	        <artifactId>mockito-core</artifactId>
+	        <version>4.5.1</version>
+	        <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	    	<groupId>com.example</groupId>
+	    	<artifactId>carrosApi</artifactId>
+	    	<version>0.0.1-SNAPSHOT</version>
+	    </dependency>
 	</dependencies>
 
 	<build>
