@@ -32,23 +32,30 @@ public class CarrinhoService {
 	private ProdutoRepository produtoRepository;
 
 	public String adicionarProdutoAoCarrinho(Long carrinhoId, Long produtoId) {
-		Carrinho carrinho = carrinhoRepository.findById(carrinhoId);
-		Produto produto = produtoRepository.findById(produtoId);
+	    Carrinho carrinho = carrinhoRepository.findById(carrinhoId);
+	    Produto produto = produtoRepository.findById(produtoId);
 
-		if (carrinho == null) {
-			return "Carrinho não encontrado";
-		}
-		if (produto == null) {
-			return "Produto não encontrado";
-		}
+	    if (carrinho == null) {
+	        return "Carrinho não encontrado";
+	    }
+	    if (produto == null) {
+	        return "Produto não encontrado";
+	    }
 
-		carrinho.adicionarProduto(produto);
-		return "Produto adicionado ao carrinho";
-	}
+	    // Verificar se o produto está associado a uma categoria
+	    if (produto.getCategoria() == null) {
+	        return "Produto não está associado a nenhuma categoria";
+	    }
 
-	public Set<Produto> listarProdutosNoCarrinho(Long carrinhoId) {
-		Carrinho carrinho = carrinhoRepository.findById(carrinhoId);
-		return (carrinho != null) ? carrinho.getProdutos() : Collections.emptySet();
+	    // Verificar se a categoria do produto permite a adição ao carrinho
+	    Categoria categoria = produto.getCategoria();
+	    if (categoria == null) {
+	        return "Produto não está associado a uma categoria válida";
+	    }
+
+	    // Se tudo estiver ok, adicionar o produto ao carrinho
+	    carrinho.adicionarProduto(produto);
+	    return "Produto adicionado ao carrinho";
 	}
 
 	public String removerProdutoDoCarrinho(Long carrinhoId, Long produtoId) {
