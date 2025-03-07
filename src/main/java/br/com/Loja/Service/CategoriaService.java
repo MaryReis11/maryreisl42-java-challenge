@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import br.com.Loja.Repository.CarrinhoRepository;
 import br.com.Loja.Repository.CategoriaRepository;
 import br.com.Loja.Repository.ProdutoRepository;
+import br.com.Loja.exception.TabelaDeErros;
 import br.com.Loja.model.Carrinho;
 import br.com.Loja.model.Categoria;
 import br.com.Loja.model.Produto;
@@ -47,7 +48,11 @@ public class CategoriaService {
 
 	    // Verificar se a categoria existe
 	    if (!categoriaOpt.isPresent()) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada.");
+	        // Usando TabelaDeErros.CATEGORIA_NAO_ENCONTRADA
+	        throw new ResponseStatusException(
+	            TabelaDeErros.CATEGORIA_NAO_ENCONTRADA.getCodigoHttp(),
+	            TabelaDeErros.CATEGORIA_NAO_ENCONTRADA.getMensagem()
+	        );
 	    }
 
 	    Categoria categoria = categoriaOpt.get();
@@ -57,8 +62,11 @@ public class CategoriaService {
 	        .anyMatch(produto -> produto.getCategoria().getId().equals(categoriaId));
 
 	    if (temProdutosAssociados) {
-	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-	            "Não é possível excluir a categoria, pois ela está associada a produtos.");
+	        // Usando TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO
+	        throw new ResponseStatusException(
+	            TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO.getCodigoHttp(),
+	            TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO.getMensagem()
+	        );
 	    }
 
 	    // Remover a categoria
