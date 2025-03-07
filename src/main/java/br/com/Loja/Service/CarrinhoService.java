@@ -1,26 +1,17 @@
 package br.com.Loja.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.Loja.Repository.CarrinhoRepository;
-import br.com.Loja.Repository.CategoriaRepository;
 import br.com.Loja.Repository.ProdutoRepository;
 import br.com.Loja.model.Carrinho;
-import br.com.Loja.model.Categoria;
 import br.com.Loja.model.Produto;
-import br.com.Loja.model.dto.ProdutoSaidaDto;
 
 @Service
 public class CarrinhoService {
