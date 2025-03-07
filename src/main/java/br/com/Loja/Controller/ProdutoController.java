@@ -1,6 +1,8 @@
 package br.com.Loja.Controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.Loja.Service.ProdutoService;
+import br.com.Loja.model.Categoria;
 import br.com.Loja.model.Produto;
 import br.com.Loja.model.dto.ProdutoEntradaDto;
 import br.com.Loja.model.dto.ProdutoSaidaDto;
@@ -41,13 +45,23 @@ public class ProdutoController {
 
 	@PutMapping("/{produtoId}/categoria/{categoriaId}")
 	public ResponseEntity<String> associarCategoria(@PathVariable Long produtoId, @PathVariable Long categoriaId) {
-		try {
-			produtoService.associarCategoria(produtoId, categoriaId);
-			return ResponseEntity.ok("Categoria associada com sucesso ao produto.");
-		} catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
+	    try {
+	        Produto produto = produtoService.associarCategoria(produtoId, categoriaId);
+	        return ResponseEntity.ok("Categoria associada ao produto com sucesso.");
+	    } catch (ResponseStatusException e) {
+	        return ResponseEntity.status(e.getStatusCode()).body(e.getReason() != null ? e.getReason() : "Erro desconhecido");
+	    }
 	}
+	
+	@PutMapping("/{produtoId}/remover-categoria")
+    public ResponseEntity<String> desassociarCategoria(@PathVariable Long produtoId) {
+        try {
+            produtoService.desassociarCategoria(produtoId);
+            return ResponseEntity.ok("Categoria desassociada do produto com sucesso.");
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        }
+    }
 
 	@GetMapping
 	public ResponseEntity<List<Produto>> listarProdutos() {

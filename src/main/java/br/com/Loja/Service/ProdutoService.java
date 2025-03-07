@@ -51,24 +51,41 @@ public class ProdutoService {
 	}
 
 	// Associar um produto a uma categoria
-	public void associarCategoria(Long produtoId, Long categoriaId) {
-		Produto produto = produtoRepository.findById(produtoId)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+	public Produto associarCategoria(Long produtoId, Long categoriaId) {
+	    // Buscando o produto no repositório
+	    Produto produto = produtoRepository.findById(produtoId);
+	    if (produto == null) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+	    }
 
-		Categoria categoria = categoriaRepository.findById(categoriaId)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
+	    // Buscando a categoria com Optional
+	    Optional<Categoria> categoriaOptional = categoriaRepository.findById(categoriaId);
+	    
+	    if (!categoriaOptional.isPresent()) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
+	    }
 
-		produto.setCategoria(categoria); // Associa a categoria ao produto
-		produtoRepository.save(produto);
+	    Categoria categoria = categoriaOptional.get(); // Pega a categoria presente
+
+	    // Associando a categoria ao produto
+	    produto.setCategoria(categoria);
+	    return produtoRepository.save(produto);
 	}
 
-	public void desassociarCategoria(Long produtoId) {
-		Produto produto = produtoRepository.findById(produtoId)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+	public Produto desassociarCategoria(Long produtoId) {
+        Produto produto = produtoRepository.findById(produtoId);
 
-		produto.setCategoria(null); // Remove a categoria associada ao produto
-		produtoRepository.save(produto);
-	}
+        if (produto == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+        }
+
+        if (produto.getCategoria() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto já está sem categoria");
+        }
+
+        produto.setCategoria(null); // Remove a categoria associada
+        return produtoRepository.save(produto);
+    }
 
 	// Listar todos os produtos
 	public List<Produto> listarProdutos() {

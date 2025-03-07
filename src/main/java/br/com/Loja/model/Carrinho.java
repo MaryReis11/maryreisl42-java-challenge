@@ -36,14 +36,15 @@ public class Carrinho {
 		this.produtos = produtos;
 	}
 
-	// Método para adicionar produto ao carrinho
 	public void adicionarProduto(Produto produto) {
-		this.produtos.add(produto);
-	}
+        produtos.add(produto);
+        produto.adicionarAoCarrinho(this); // Vincula o produto ao carrinho
+    }
 
-	// Método para remover produto do carrinho
-	public void removerProduto(Long produtoId) {
-		this.produtos.remove(produtoId);
-	}
+    public void removerProduto(Produto produto) {
+        produtos.remove(produto);
+        produto.removerDoCarrinho(this); // Remove o vínculo com o carrinho
+    }
+	
 
 }

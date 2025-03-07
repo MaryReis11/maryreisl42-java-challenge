@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.Loja.Repository.CarrinhoRepository;
 import br.com.Loja.Repository.CategoriaRepository;
@@ -39,31 +41,29 @@ public class CategoriaService {
 		return categoriaRepository.findAll();
 	}
 
-	public boolean podeRemoverCategoria(Long categoriaId) {
-		// Verificar se a categoria está associada a produtos ou carrinhos
-		List<Produto> produtos = produtoRepository.findAll();
-		for (Produto produto : produtos) {
-			if (produto.getCategoria() != null && produto.getCategoria().getId().equals(categoriaId)) {
-				return false; // Categoria está associada a um produto
-			}
-		}
-
-		List<Carrinho> carrinhos = carrinhoRepository.findAll();
-		for (Carrinho carrinho : carrinhos) {
-			if (carrinho.getProdutos().stream()
-					.anyMatch(produto -> produto.getCategoria().getId().equals(categoriaId))) {
-				return false; // Categoria está associada a um carrinho
-			}
-		}
-
-		return true; // Se não estiver associada a produtos ou carrinhos
-	}
-
 	public void removerCategoria(Long categoriaId) {
-		categoriaRepository.delete(categoriaId);
+	    // Buscar categoria pelo ID
+	    Optional<Categoria> categoriaOpt = categoriaRepository.findById(categoriaId);
+
+	    // Verificar se a categoria existe
+	    if (!categoriaOpt.isPresent()) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada.");
+	    }
+
+	    Categoria categoria = categoriaOpt.get();
+
+	    // Verificar se há produtos associados a essa categoria
+	    boolean temProdutosAssociados = produtoRepository.findAll().stream()
+	        .anyMatch(produto -> produto.getCategoria().getId().equals(categoriaId));
+
+	    if (temProdutosAssociados) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+	            "Não é possível excluir a categoria, pois ela está associada a produtos.");
+	    }
+
+	    // Remover a categoria
+	    categoriaRepository.delete(categoria);
 	}
 
-	public Optional<Categoria> findCategoriaById(Long categoriaId) {
-		return categoriaRepository.findById(categoriaId);
-	}
+	
 }

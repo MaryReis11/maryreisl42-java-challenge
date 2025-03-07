@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class CategoriaController {
 	public CategoriaController(CategoriaService categoriaService) {
 		this.categoriaService = categoriaService;
 	}
+	
 
 	@PostMapping
 	public ResponseEntity<CategoriaSaidaDto> cadastrarCategoria(@RequestBody CategoriaEntradaDto categoriaEntradaDto) {
@@ -42,18 +44,18 @@ public class CategoriaController {
 		List<Categoria> categorias = categoriaService.listarCategorias();
 		List<CategoriaSaidaDto> categoriaSaidaDtos = categorias.stream()
 				.map(c -> new CategoriaSaidaDto(c.getId(), c.getNome())).collect(Collectors.toList());
-		return ResponseEntity.ok(categoriaSaidaDtos);
+		return ResponseEntity.ok(categoriaSaidaDtos);    
 	}
 
-	@DeleteMapping("/{categoriaId}")
-	public ResponseEntity<String> removerCategoria(@PathVariable Long categoriaId) {
-		// Verificar se a categoria está associada a produtos ou carrinhos
-		if (!categoriaService.podeRemoverCategoria(categoriaId)) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body("Categoria não pode ser removida porque está associada a produtos ou carrinhos.");
-		}
-		categoriaService.removerCategoria(categoriaId);
-		return ResponseEntity.ok("Categoria removida com sucesso.");
-	}
+	// Remover Categoria
+    @DeleteMapping("/{categoriaId}")
+    public ResponseEntity<String> removerCategoria(@PathVariable Long categoriaId) {
+        try {
+            categoriaService.removerCategoria(categoriaId);
+            return ResponseEntity.ok("Categoria removida com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }

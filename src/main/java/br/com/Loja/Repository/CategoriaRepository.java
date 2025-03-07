@@ -24,11 +24,12 @@ public class CategoriaRepository {
 		return categorias;
 	}
 
-	public void delete(Long categoriaId) {
-		categorias.removeIf(c -> c.getId().equals(categoriaId));
+	public void delete(Categoria categoria) {
+		categorias.removeIf(c -> c.getId().equals(categoria.getId()));
 	}
 
 	public Optional<Categoria> findById(Long categoriaId) {
 		return categorias.stream().filter(c -> c.getId().equals(categoriaId)).findFirst();
 	}
+	
 }

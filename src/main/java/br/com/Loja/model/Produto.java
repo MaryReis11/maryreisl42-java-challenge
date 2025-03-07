@@ -1,5 +1,8 @@
 package br.com.Loja.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -9,6 +12,7 @@ public class Produto {
 	private String nome;
 	private Double preco;
 	private Categoria categoria; // A relação com a categoria
+	private List<Carrinho> carrinhos = new ArrayList<>(); // Lista de carrinhos onde este produto está
 
 	// Construtor sem argumentos
 	public Produto() {
@@ -22,6 +26,18 @@ public class Produto {
 		this.preco = preco;
 		this.categoria = categoria; // Associa a categoria ao produto
 	}
+	
+	public List<Carrinho> getCarrinhos() {
+        return carrinhos;
+    }
+
+    public void adicionarAoCarrinho(Carrinho carrinho) {
+        this.carrinhos.add(carrinho);
+    }
+
+    public void removerDoCarrinho(Carrinho carrinho) {
+        this.carrinhos.remove(carrinho);
+    }
 
 	// Getters e Setters
 	public Long getId() {
@@ -60,5 +76,6 @@ public class Produto {
 		// TODO Auto-generated method stub
 
 	}
+
 
 }
