@@ -23,11 +23,13 @@ public class ProdutoService {
 
 	private final ProdutoRepository produtoRepository;
 	private final CategoriaRepository categoriaRepository;
+	private final CarrinhoRepository carrinhoRepository;
 
 	@Autowired
 	public ProdutoService(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
 		this.produtoRepository = produtoRepository;
 		this.categoriaRepository = categoriaRepository;
+		this.carrinhoRepository = new CarrinhoRepository();
 	}
 
 	// Criar um produto
@@ -43,12 +45,23 @@ public class ProdutoService {
 	}
 
 	public void deletarProduto(Long produtoId) {
-		Produto produto = produtoRepository.findById(produtoId);
-		if (produto == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
-		}
-		produtoRepository.delete(produto); // Remover o produto do repositório
-	}
+        Produto produto = produtoRepository.findById(produtoId);
+
+        if (produto == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado.");
+        }
+
+        // Verifica se o produto está em algum carrinho
+        boolean estaEmCarrinho = carrinhoRepository.findAll().stream()
+            .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
+
+        if (estaEmCarrinho) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "O produto está em um carrinho e não pode ser removido.");
+        }
+
+        produtoRepository.delete(produto);
+    }
 
 	// Associar um produto a uma categoria
 	public Produto associarCategoria(Long produtoId, Long categoriaId) {
@@ -91,5 +104,12 @@ public class ProdutoService {
 	public List<Produto> listarProdutos() {
 		return produtoRepository.findAll();
 	}
+	public Produto buscarPorId(Long id) {
+        return produtoRepository.findById(id);
+    }
+	// Método correto para encontrar o produto
+    public Produto findById(Long id) {
+        return produtoRepository.findById(id); // Aqui usamos o método do repositório
+    }
 
 }

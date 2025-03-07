@@ -20,11 +20,13 @@ public class ProdutoRepository {
 	}
 
 	// Salva o produto no repositório em memória
-	public Produto save(Produto produto) {
-		produto.setId(idCounter++);
-		produtos.add(produto);
-		return produto;
-	}
+    public Produto save(Produto produto) {
+        if (produto.getId() == null) {
+            produto.setId(idCounter++);
+        }
+        produtos.add(produto);
+        return produto;
+    }
 
 	public void delete(Produto produto) {
 		produtos.remove(produto);
@@ -39,4 +41,5 @@ public class ProdutoRepository {
 	public Produto findById(Long id) {
 		return produtos.stream().filter(p -> p.getId().equals(id)).findFirst().orElse(null);
 	}
+	
 }

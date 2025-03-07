@@ -32,41 +32,56 @@ public class CarrinhoService {
 	private ProdutoRepository produtoRepository;
 
 	public String adicionarProdutoAoCarrinho(Long carrinhoId, Long produtoId) {
-	    Carrinho carrinho = carrinhoRepository.findById(carrinhoId);
+	    Optional<Carrinho> carrinhoOpt = carrinhoRepository.findById(carrinhoId);
 	    Produto produto = produtoRepository.findById(produtoId);
 
-	    if (carrinho == null) {
+	    if (!carrinhoOpt.isPresent()) {
 	        return "Carrinho não encontrado";
 	    }
 	    if (produto == null) {
 	        return "Produto não encontrado";
 	    }
-
-	    // Verificar se o produto está associado a uma categoria
 	    if (produto.getCategoria() == null) {
 	        return "Produto não está associado a nenhuma categoria";
 	    }
 
-	    // Verificar se a categoria do produto permite a adição ao carrinho
-	    Categoria categoria = produto.getCategoria();
-	    if (categoria == null) {
-	        return "Produto não está associado a uma categoria válida";
-	    }
-
-	    // Se tudo estiver ok, adicionar o produto ao carrinho
+	    Carrinho carrinho = carrinhoOpt.get();
 	    carrinho.adicionarProduto(produto);
+	    
+	    // Salvar a alteração no repositório
+	    carrinhoRepository.save(carrinho);
+
 	    return "Produto adicionado ao carrinho";
 	}
 
 	public String removerProdutoDoCarrinho(Long carrinhoId, Long produtoId) {
-		Carrinho carrinho = carrinhoRepository.findById(carrinhoId);
-		if (carrinho == null) {
-			return "Carrinho não encontrado";
-		}
-		if (!carrinho.removerProduto(produtoId)) {
-			return "Produto não encontrado no carrinho";
-		}
-		carrinhoRepository.save(carrinho); // Salva o carrinho atualizado
-		return "Produto removido do carrinho";
+	    // Busca o carrinho pelo ID
+	    Optional<Carrinho> carrinhoOpt = carrinhoRepository.findById(carrinhoId);
+	    
+	    // Verifica se o carrinho foi encontrado
+	    if (!carrinhoOpt.isPresent()) {
+	        return "Carrinho não encontrado";
+	    }
+	    
+	    Carrinho carrinho = carrinhoOpt.get();
+
+	    // Verifica se o carrinho está finalizado
+	    if (carrinho.isFinalizado()) {
+	        return "Carrinho finalizado. Não é possível remover produtos.";
+	    }
+
+	    // Busca o produto no carrinho (supondo que o método "removerProduto" no Carrinho recebe o produto em vez de apenas o ID)
+	    Produto produto = produtoRepository.findById(produtoId);
+	    if (produto == null) {
+	        return "Produto não encontrado";
+	    }
+
+	    // Remover o produto
+	    carrinho.removerProduto(produto);
+	    
+	    // Salva a mudança no repositório
+	    carrinhoRepository.save(carrinho);
+	    
+	    return "Produto removido do carrinho";
 	}
 }

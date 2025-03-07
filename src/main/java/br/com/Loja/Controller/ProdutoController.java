@@ -71,12 +71,12 @@ public class ProdutoController {
 
 	@DeleteMapping("/{produtoId}")
 	public ResponseEntity<String> deletarProduto(@PathVariable Long produtoId) {
-		try {
-			produtoService.deletarProduto(produtoId);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Produto excluído com sucesso.");
-		} catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
+	    Produto produto = produtoService.findById(produtoId);
+	    if (produto == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
+	    }
+	    produtoService.deletarProduto(produtoId);
+	    return ResponseEntity.ok("Produto removido com sucesso");
 	}
 
 }

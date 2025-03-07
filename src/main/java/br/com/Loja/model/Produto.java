@@ -34,6 +34,11 @@ public class Produto {
     public void adicionarAoCarrinho(Carrinho carrinho) {
         this.carrinhos.add(carrinho);
     }
+    
+ // Método para verificar se o produto está em algum carrinho
+    public boolean estaNoCarrinho() {
+        return !carrinhos.isEmpty(); // Retorna true se o produto estiver associado a algum carrinho
+    }
 
     public void removerDoCarrinho(Carrinho carrinho) {
         this.carrinhos.remove(carrinho);
@@ -76,6 +81,5 @@ public class Produto {
 		// TODO Auto-generated method stub
 
 	}
-
 
 }

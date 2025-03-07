@@ -18,8 +18,8 @@ public class CarrinhoRepository {
 	private Map<Long, Carrinho> carrinhos = new HashMap<>();
 	private Long idCounter = 1L;
 
-	public Carrinho findById(Long id) {
-		return carrinhos.get(id);
+	public Optional<Carrinho> findById(Long id) {
+	    return Optional.ofNullable(carrinhos.get(id));
 	}
 
 	public Carrinho criarCarrinho() {
@@ -27,13 +27,14 @@ public class CarrinhoRepository {
 		carrinhos.put(novoCarrinho.getId(), novoCarrinho);
 		return novoCarrinho;
 	}
-
+	
 	public List<Carrinho> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+	    return new ArrayList<>(carrinhos.values());
 	}
 
-	public boolean removerProduto(Long produtoId) {
-		return produtos.removeIf(produto -> produto.getId().equals(produtoId));
-	}
+	// Salvar ou atualizar um carrinho
+    public void save(Carrinho carrinho) {
+        carrinhos.put(carrinho.getId(), carrinho);  // Se o carrinho já existir, ele será atualizado
+    }
+	
 }
