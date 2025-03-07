@@ -75,7 +75,11 @@ public class ProdutoService {
 	    // Buscando o produto no repositório
 	    Produto produto = produtoRepository.findById(produtoId);
 	    if (produto == null) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+	        // Usando TabelaDeErros.PRODUTO_NAO_ENCONTRADO
+	        throw new ResponseStatusException(
+	            TabelaDeErros.PRODUTO_NAO_ENCONTRADO.getCodigoHttp(), 
+	            TabelaDeErros.PRODUTO_NAO_ENCONTRADO.getMensagem()
+	        );
 	    }
 
 	    // Verificando se o produto está no carrinho
@@ -83,13 +87,21 @@ public class ProdutoService {
 	        .anyMatch(carrinho -> carrinho.getProdutos().contains(produto));
 
 	    if (estaEmCarrinho) {
-	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não pode ser alterada, produto está no carrinho");
+	        // Usando TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO
+	        throw new ResponseStatusException(
+	            TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO.getCodigoHttp(),
+	            TabelaDeErros.CATEGORIA_ASSOCIADA_PRODUTO.getMensagem()
+	        );
 	    }
 
 	    // Buscando a categoria com Optional
 	    Optional<Categoria> categoriaOptional = categoriaRepository.findById(categoriaId);
 	    if (!categoriaOptional.isPresent()) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
+	        // Usando TabelaDeErros.CATEGORIA_NAO_ENCONTRADA
+	        throw new ResponseStatusException(
+	            TabelaDeErros.CATEGORIA_NAO_ENCONTRADA.getCodigoHttp(),
+	            TabelaDeErros.CATEGORIA_NAO_ENCONTRADA.getMensagem()
+	        );
 	    }
 
 	    Categoria categoria = categoriaOptional.get(); // Pega a categoria presente
@@ -98,6 +110,7 @@ public class ProdutoService {
 	    produto.setCategoria(categoria);
 	    return produtoRepository.save(produto);
 	}
+	
 
 	public Produto desassociarCategoria(Long produtoId) {
 	    Produto produto = produtoRepository.findById(produtoId);
