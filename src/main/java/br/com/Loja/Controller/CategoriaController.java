@@ -29,7 +29,6 @@ public class CategoriaController {
 	public CategoriaController(CategoriaService categoriaService) {
 		this.categoriaService = categoriaService;
 	}
-	
 
 	@PostMapping
 	public ResponseEntity<CategoriaSaidaDto> cadastrarCategoria(@RequestBody CategoriaEntradaDto categoriaEntradaDto) {
@@ -46,7 +45,6 @@ public class CategoriaController {
 		return ResponseEntity.ok(categoriaSaidaDtos);    
 	}
 
-	// Remover Categoria
     @DeleteMapping("/{categoriaId}")
     public ResponseEntity<String> removerCategoria(@PathVariable Long categoriaId) {
         try {
