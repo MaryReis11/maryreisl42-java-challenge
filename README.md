@@ -54,3 +54,4 @@ Contém as entidades e objetos de transferência de dados (DTOs). Representa os 
 Contém a lógica de negócios da aplicação, com regras específicas para manipulação de produtos, categorias e carrinho de compras.
 4. 🌐 Controller
 Responsável por expor a API REST. Gerencia as requisições HTTP e retorna as respostas adequadas, utilizando as informações manipuladas pela camada Service.
+
