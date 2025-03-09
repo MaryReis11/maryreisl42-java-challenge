@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class Produto {
 
 	private Long id;

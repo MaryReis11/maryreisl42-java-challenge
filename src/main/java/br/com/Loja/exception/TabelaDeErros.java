@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum TabelaDeErros {
 	
 	VALIDACAO(HttpStatus.BAD_REQUEST, "1001-1000", "Dados de requisição inválidos"),
