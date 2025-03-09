@@ -37,14 +37,13 @@ docker run -p 8080:8080 loja-virtual-api
 
 Agora, você pode acessar a aplicação na URL: http://localhost:8080.
 
-
-# 🧩 Tecnologias Utilizadas
-☕ Java 21 - A versão mais recente do Java.
-🔧 Spring Boot - Framework para desenvolvimento de aplicações Java.
-🐳 Docker - Para containerização da aplicação.
-🔍 JUnit - Framework para testes automatizados.
-📄 Swagger - Para documentação interativa da API.
-🏗️ Arquitetura
+- 🧩 Tecnologias Utilizadas
+- ☕ Java 21 - A versão mais recente do Java.
+- 🔧 Spring Boot - Framework para desenvolvimento de aplicações Java.
+- 🐳 Docker - Para containerização da aplicação.
+- 🔍 JUnit - Framework para testes automatizados.
+- 📄 Swagger - Para documentação interativa da API.
+- 🏗️ Arquitetura
 A API foi desenvolvida seguindo a Clean Architecture, garantindo uma boa organização do código e separação de responsabilidades. As camadas principais são:
 
 🔍 Repository
