@@ -37,7 +37,7 @@ docker run -p 8080:8080 loja-virtual-api
 
 Agora, você pode acessar a aplicação na URL: http://localhost:8080.
 
-## 🧩 Tecnologias Utilizadas
+🧩 Tecnologias Utilizadas
 ☕ Java 21 - A versão mais recente do Java.
 🔧 Spring Boot - Framework para desenvolvimento de aplicações Java.
 🐳 Docker - Para containerização da aplicação.
