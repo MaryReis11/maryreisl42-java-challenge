@@ -62,7 +62,7 @@ public class Categoria {
 		public void removeProduto(Produto produto) {
 			this.produtos.remove(produto);
 		}
-		
+		//
 	    public int getIdProdutos() {
 	        if (produtos == null) {
 	            return 0;  // Se não houver produtos, retorna 0
