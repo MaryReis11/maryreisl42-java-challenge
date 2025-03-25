@@ -62,7 +62,7 @@ public class Categoria {
 		public void removeProduto(Produto produto) {
 			this.produtos.remove(produto);
 		}
-		// Adicione um método para retornar o número de produtos associados
+		
 	    public int getIdProdutos() {
 	        if (produtos == null) {
 	            return 0;  // Se não houver produtos, retorna 0
